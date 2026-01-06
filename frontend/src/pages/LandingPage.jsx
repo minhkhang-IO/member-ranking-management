@@ -4,6 +4,7 @@ import IntroSectionLanding from "../components/IntroSectionLanding";
 import GallerySection from "../components/GallerySection";
 import EventLanding from "../components/EventLanding";
 import Footer from "../components/Footer";
+import ArrowButton from "../components/ArrowButton";
 
 const LandingPage = () => {
     return (
@@ -14,6 +15,7 @@ const LandingPage = () => {
         <EventLanding />
         <GallerySection/>
         <Footer/>
+        <ArrowButton/>
       </>
     )
 }

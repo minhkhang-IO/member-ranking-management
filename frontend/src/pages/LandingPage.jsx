@@ -5,19 +5,22 @@ import GallerySection from "../components/GallerySection";
 import EventLanding from "../components/EventLanding";
 import Footer from "../components/Footer";
 import ArrowButton from "../components/ArrowButton";
+import MemberIntro from "../components/MemberIntro";
 
 const LandingPage = () => {
-    return (
-      <>
-        <NavBar />
-        <IntroSectionLanding /> 
-        <AboutUsLanding />
-        <EventLanding />
-        <GallerySection/>
-        <Footer/>
-        <ArrowButton/>
-      </>
-    )
-}
+  return (
+    <>
+      <NavBar />
+      <IntroSectionLanding />
+      <AboutUsLanding />
+      <EventLanding />
+      <GallerySection />
+
+      <MemberIntro />
+      <Footer />
+      <ArrowButton />
+    </>
+  );
+};
 
 export default LandingPage;

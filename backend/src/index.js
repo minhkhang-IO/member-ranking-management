@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import chatRoutes from "./routes/chatRoutes.js";
 
 // 1. Load config
 dotenv.config();
@@ -11,6 +12,9 @@ const PORT = process.env.PORT || 5000;
 // 2. Middleware (Allows Frontend to talk to Backend)
 app.use(cors());
 app.use(express.json());
+
+// Routes
+app.use("/api/assistant", chatRoutes);
 
 // 3. Test Routes (No Database needed)
 app.get("/", (req, res) => {

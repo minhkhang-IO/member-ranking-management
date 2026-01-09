@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import Icon from './Icon';
+import axios from 'axios';
 
 const AssistantChatbox = ({ isOpen, onClose }) => {
   const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -12,23 +14,44 @@ const AssistantChatbox = ({ isOpen, onClose }) => {
   ]);
   const messagesEndRef = useRef(null);
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() || isLoading) return;
 
+    const userText = inputValue.trim();
     const newMessage = {
-      id: messages.length + 1,
-      text: inputValue,
+      id: Date.now(),
+      text: userText,
       sender: 'user',
     };
 
-    setMessages([...messages, newMessage]);
+    setMessages((prev) => [...prev, newMessage]);
     setInputValue('');
-    
-    // Simulate bot response placeholder for now
-    setTimeout(() => {
-      setMessages(prev => [...prev, { id: prev.length + 1, text: "I'm not connected to Gemini yet!", sender: 'bot' }]);
-    }, 1000);
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post('/api/assistant', {
+        message: userText
+      });
+
+      const botReply = {
+        id: Date.now() + 1,
+        text: response.data.reply,
+        sender: 'bot',
+      };
+
+      setMessages((prev) => [...prev, botReply]);
+    } catch (error) {
+      console.error("Chat error:", error);
+      const errorMsg = {
+        id: Date.now() + 1,
+        text: "Sorry, I encountered an error. Please try again later.",
+        sender: 'bot',
+      };
+      setMessages((prev) => [...prev, errorMsg]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -87,6 +110,23 @@ const AssistantChatbox = ({ isOpen, onClose }) => {
                 </div>
               </div>
             ))}
+            
+            {/* Loading Indicator */}
+            {isLoading && (
+              <div className="flex w-full justify-start">
+                  <div className="flex flex-row gap-4 max-w-[85%]">
+                     <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0 shadow-sm p-2">
+                       <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" alt="AI" className="w-full h-full animate-pulse" />
+                    </div>
+                    <div className="p-4 rounded-2xl bg-gray-50 text-gray-500 rounded-tl-none flex items-center gap-1 border border-gray-100">
+                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                    </div>
+                  </div>
+              </div>
+            )}
+            
             <div ref={messagesEndRef} />
           </div>
 
@@ -102,14 +142,14 @@ const AssistantChatbox = ({ isOpen, onClose }) => {
               />
               <button
                 type="submit"
-                disabled={!inputValue.trim()}
+                disabled={!inputValue.trim() || isLoading}
                 className={`absolute right-3 p-2 rounded-lg transition-colors ${
-                  inputValue.trim() 
+                  inputValue.trim() && !isLoading
                     ? 'bg-white text-blue-600 hover:bg-blue-50' 
                     : 'bg-transparent text-gray-300 cursor-not-allowed'
                 }`}
               >
-                <Icon name="send" size="24px" fill={inputValue.trim()} />
+                <Icon name="send" size="24px" fill={inputValue.trim() && !isLoading} />
               </button>
             </form>
           </div>

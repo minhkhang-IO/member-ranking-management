@@ -1,7 +1,5 @@
 import React from "react";
 
-import Icon from "./Icon";
-
 const paths = [
   {
     fill: "#E94436",
@@ -32,19 +30,35 @@ const teamData = [
 
 const MemberIntro = () => {
   return (
-    <div className="py-20 px-5 text-center bg-white">
-      <h1 className="text-4xl text-[#109d58] mb-12">Meet Our Team</h1>
+    <section
+      id="section-members"
+      className="py-12 px-5 text-center bg-white scroll-mt-24"
+    >
+      <h1 className="text-4xl font-bold mb-10 text-gray-800">Meet Our Team</h1>
+
       <div className="flex flex-wrap justify-center gap-10">
         {teamData.map((member, i) => (
-          <div className="w-62.5 transition-transform duration-300 ease-in-out hover:-translate-y-2.5" key={member.id}>
-            <SVGClipImage
-              url={`/members/${member.id}.png`} // Đảm bảo bạn có ảnh .png trong public/members/
-              path={paths[i % paths.length]}
-              id={member.id}
-            />
-            <div className="mt-4">
-              <h3 className="text-xl font-bold my-1">{member.name}</h3>
-              <p className="text-[#5f6368] text-sm">{member.position}</p>
+          <div
+            key={member.id}
+            className="group w-[200px] cursor-pointer transition-transform duration-500 hover:-translate-y-2 active:scale-95"
+          >
+            <div className="relative w-[200px] h-[220px] mb-4 !overflow-visible flex items-center justify-center">
+              <div className="absolute inset-0 w-full h-[200px] mt-5 bg-gray-100 opacity-0 rounded-xl transition-all duration-200 group-active:opacity-100 group-active:scale-105 group-active:bg-slate-200" />
+              <div className="relative z-10 w-full h-full">
+                <SVGClipImage
+                  url={`/members/${member.id}.png`}
+                  path={paths[i % paths.length]}
+                  id={member.id}
+                />
+              </div>
+            </div>
+            <div className="relative z-10 bg-white pt-2 transition-colors group-active:text-blue-600">
+              <h3 className="text-lg font-bold text-gray-800 uppercase tracking-tight leading-tight">
+                {member.name}
+              </h3>
+              <p className="text-sm text-gray-500 font-medium">
+                {member.position}
+              </p>
             </div>
           </div>
         ))}
@@ -55,7 +69,10 @@ const MemberIntro = () => {
 
 const SVGClipImage = ({ url, path: pathData, id }) => {
   return (
-    <svg viewBox="0 0 200 200" className="w-50 h-50">
+    <svg
+      viewBox="0 0 200 200"
+      className="w-full h-full !overflow-visible transition-transform duration-500 ease-out group-hover:scale-110"
+    >
       <defs>
         <clipPath id={`clip-${id}`}>
           <path d={pathData.d} transform="translate(100 100)" />
@@ -71,7 +88,6 @@ const SVGClipImage = ({ url, path: pathData, id }) => {
         transform="translate(100 100)"
       />
 
-      {/* Ảnh nhân vật */}
       <image
         href={url}
         width="180"
